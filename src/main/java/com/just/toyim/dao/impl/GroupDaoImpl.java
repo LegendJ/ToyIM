@@ -2,10 +2,12 @@ package com.just.toyim.dao.impl;
 
 import com.just.toyim.dao.GroupDao;
 import com.just.toyim.dao.meta.GroupInfo;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class GroupDaoImpl extends BaseDao implements GroupDao {
     @Override
     public long add(GroupInfo groupInfo) {

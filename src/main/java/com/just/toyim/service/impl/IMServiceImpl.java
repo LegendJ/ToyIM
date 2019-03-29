@@ -3,7 +3,9 @@ package com.just.toyim.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.just.toyim.service.IMService;
 import io.netty.channel.ChannelHandlerContext;
+import org.springframework.stereotype.Service;
 
+@Service
 public class IMServiceImpl implements IMService {
 
     @Override

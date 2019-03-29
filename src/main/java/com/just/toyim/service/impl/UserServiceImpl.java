@@ -1,12 +1,17 @@
 package com.just.toyim.service.impl;
 
+import com.just.toyim.dao.UserDao;
 import com.just.toyim.service.meta.HttpResponse;
 import com.just.toyim.service.meta.UserDto;
 import com.just.toyim.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
+    @Autowired
+    UserDao userDaoImpl;
+
     @Override
     public HttpResponse login(UserDto user) {
         if (isValid(user.getUsername(), user.getPassword())) {

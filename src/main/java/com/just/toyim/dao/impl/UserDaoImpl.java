@@ -2,10 +2,12 @@ package com.just.toyim.dao.impl;
 
 import com.just.toyim.dao.UserDao;
 import com.just.toyim.dao.meta.UserInfo;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class UserDaoImpl extends BaseDao implements UserDao {
     @Override
     public long add(UserInfo userInfo) {
