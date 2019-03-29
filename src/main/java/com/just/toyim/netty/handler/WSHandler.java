@@ -1,7 +1,7 @@
 package com.just.toyim.netty.handler;
 
 import com.alibaba.fastjson.JSONObject;
-import com.just.toyim.pojo.ResponseJson;
+import com.just.toyim.pojo.HttpResponse;
 import com.just.toyim.service.IMService;
 import com.just.toyim.service.impl.IMServiceImpl;
 import com.just.toyim.util.Constants;
@@ -66,13 +66,13 @@ public class WSHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
                 chatService.register(packet, ctx);
                 break;
             case "SINGLE_SENDING":
-                chatService.singleSend(packet, ctx);
+                chatService.p2pSend(packet, ctx);
                 break;
             case "GROUP_SENDING":
                 chatService.groupSend(packet, ctx);
                 break;
             case "FILE_MSG_SINGLE_SENDING":
-                chatService.FileMsgSingleSend(packet, ctx);
+                chatService.FileMsgP2pSend(packet, ctx);
                 break;
             case "FILE_MSG_GROUP_SENDING":
                 chatService.FileMsgGroupSend(packet, ctx);
@@ -102,7 +102,7 @@ public class WSHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
 
 
     private void sendErrorMessage(ChannelHandlerContext ctx, String errorMsg) {
-        String responseJson = new ResponseJson()
+        String responseJson = new HttpResponse()
                 .error(errorMsg)
                 .toString();
         ctx.channel().writeAndFlush(new TextWebSocketFrame(responseJson));

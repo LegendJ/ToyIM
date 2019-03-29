@@ -12,7 +12,7 @@ public class IMServiceImpl implements IMService {
     }
 
     @Override
-    public void singleSend(JSONObject packet, ChannelHandlerContext ctx) {
+    public void p2pSend(JSONObject packet, ChannelHandlerContext ctx) {
 
     }
 
@@ -22,7 +22,7 @@ public class IMServiceImpl implements IMService {
     }
 
     @Override
-    public void FileMsgSingleSend(JSONObject packet, ChannelHandlerContext ctx) {
+    public void FileMsgP2pSend(JSONObject packet, ChannelHandlerContext ctx) {
 
     }
 

@@ -2,6 +2,7 @@ package com.just.toyim.netty;
 
 import com.just.toyim.netty.handler.HttpHandler;
 import com.just.toyim.netty.handler.WSHandler;
+import com.just.toyim.netty.handler.WSIdleHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -41,6 +42,7 @@ public class NettyWSServer {
                     .childHandler(new ChannelInitializer<NioSocketChannel>(){
                         @Override
                         protected void initChannel(NioSocketChannel ch) {
+                            ch.pipeline().addLast("idle-discover", new WSIdleHandler()); // 空闲检测
                             ch.pipeline().addLast("http-codec", new HttpServerCodec()); // HTTP编码解码器
                             ch.pipeline().addLast("aggregator", new HttpObjectAggregator(65536)); // 把HTTP头、HTTP体拼成完整的HTTP请求
                             ch.pipeline().addLast("http-chunked", new ChunkedWriteHandler()); // 方便大文件传输，不过实质上都是短的文本数据

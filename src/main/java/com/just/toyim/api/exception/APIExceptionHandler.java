@@ -1,6 +1,6 @@
 package com.just.toyim.api.exception;
 
-import com.just.toyim.pojo.ResponseJson;
+import com.just.toyim.pojo.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,23 +28,23 @@ public class APIExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(APIExceptionHandler.class);
 
-    private static final ResponseJson ERROR;
+    private static final HttpResponse ERROR;
 
     static {
-        ERROR = new ResponseJson(HttpStatus.INTERNAL_SERVER_ERROR).setMsg("系统出错,请稍候再试");
+        ERROR = new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR).setMsg("系统出错,请稍候再试");
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseJson resolveException(Exception exception) {
+    public HttpResponse resolveException(Exception exception) {
         LOG.error(exception.getMessage(), exception);
         return ERROR;
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseJson handleSecurityException(Exception exception) {
-        return new ResponseJson(HttpStatus.INTERNAL_SERVER_ERROR).setMsg(exception.getMessage());
+    public HttpResponse handleSecurityException(Exception exception) {
+        return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR).setMsg(exception.getMessage());
     }
 
     /**
@@ -55,10 +55,10 @@ public class APIExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseJson handleIllegalParamException(MethodArgumentNotValidException exception) {
+    public HttpResponse handleIllegalParamException(MethodArgumentNotValidException exception) {
         List<FieldError> errors = exception.getBindingResult().getFieldErrors();
         String tips = "参数不合法";
-        ResponseJson result = new ResponseJson(HttpStatus.BAD_REQUEST);
+        HttpResponse result = new HttpResponse(HttpStatus.BAD_REQUEST);
         if (!errors.isEmpty()) {
             List<String> list = errors.stream()
                     .map(error -> error.getField() + error.getDefaultMessage())
@@ -77,8 +77,8 @@ public class APIExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseJson handleServletRequestParameterException(MissingServletRequestParameterException exception) {
-        return new ResponseJson(HttpStatus.BAD_REQUEST).setMsg(exception.getMessage());
+    public HttpResponse handleServletRequestParameterException(MissingServletRequestParameterException exception) {
+        return new HttpResponse(HttpStatus.BAD_REQUEST).setMsg(exception.getMessage());
     }
 
     /**
@@ -89,13 +89,13 @@ public class APIExceptionHandler {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public ResponseJson handleMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
+    public HttpResponse handleMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
         String supportedMethods = exception.getSupportedHttpMethods().stream()
                 .map(method -> method.toString())
                 .collect(Collectors.joining("/"));
 
         String msg = "请求方法不合法,请使用方法" + supportedMethods;
-        return new ResponseJson(HttpStatus.METHOD_NOT_ALLOWED).setMsg(msg);
+        return new HttpResponse(HttpStatus.METHOD_NOT_ALLOWED).setMsg(msg);
     }
 
     /**
@@ -106,10 +106,10 @@ public class APIExceptionHandler {
      */
     @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseJson handleValidationBindException(BindException exception) {
+    public HttpResponse handleValidationBindException(BindException exception) {
         String errors = exception.getFieldErrors().stream()
                 .map(error -> error.getField() + error.getDefaultMessage())
                 .collect(Collectors.joining(","));
-        return new ResponseJson(HttpStatus.BAD_REQUEST).setMsg(errors);
+        return new HttpResponse(HttpStatus.BAD_REQUEST).setMsg(errors);
     }
 }

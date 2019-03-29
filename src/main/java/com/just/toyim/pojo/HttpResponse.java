@@ -4,47 +4,47 @@ import org.springframework.http.HttpStatus;
 import com.alibaba.fastjson.JSONObject;
 import java.util.HashMap;
 
-public class ResponseJson extends HashMap<String, Object> {
+public class HttpResponse extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
 
     private static final Integer SUCCESS_STATUS = 200;
     private static final Integer ERROR_STATUS = -1;
     private static final String SUCCESS_MSG = "success";
 
-    public ResponseJson() {
+    public HttpResponse() {
         super();
     }
 
-    public ResponseJson(int code) {
+    public HttpResponse(int code) {
         super();
         setStatus(code);
     }
 
-    public ResponseJson(HttpStatus status) {
+    public HttpResponse(HttpStatus status) {
         super();
         setStatus(status.value());
         setMsg(status.getReasonPhrase());
     }
 
-    public ResponseJson success() {
+    public HttpResponse success() {
         put("msg", SUCCESS_MSG);
         put("status", SUCCESS_STATUS);
         return this;
     }
 
-    public ResponseJson success(String msg) {
+    public HttpResponse success(String msg) {
         put("msg", msg);
         put("status", SUCCESS_STATUS);
         return this;
     }
 
-    public ResponseJson error(String msg) {
+    public HttpResponse error(String msg) {
         put("msg", msg);
         put("status", ERROR_STATUS);
         return this;
     }
 
-    public ResponseJson setData(String key, Object obj) {
+    public HttpResponse setData(String key, Object obj) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> data = (HashMap<String, Object>) get("data");
         if (data == null) {
@@ -55,17 +55,21 @@ public class ResponseJson extends HashMap<String, Object> {
         return this;
     }
 
-    public ResponseJson setStatus(int status) {
+    public HttpResponse setStatus(int status) {
         put("status", status);
         return this;
     }
 
-    public ResponseJson setMsg(String msg) {
+    public int getStatus(){
+        return (int)get("status");
+    }
+
+    public HttpResponse setMsg(String msg) {
         put("msg", msg);
         return this;
     }
 
-    public ResponseJson setValue(String key, Object val) {
+    public HttpResponse setValue(String key, Object val) {
         put(key, val);
         return this;
     }
