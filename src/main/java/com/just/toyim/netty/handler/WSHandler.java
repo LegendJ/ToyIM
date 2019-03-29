@@ -1,7 +1,7 @@
 package com.just.toyim.netty.handler;
 
 import com.alibaba.fastjson.JSONObject;
-import com.just.toyim.pojo.HttpResponse;
+import com.just.toyim.service.meta.HttpResponse;
 import com.just.toyim.service.IMService;
 import com.just.toyim.service.impl.IMServiceImpl;
 import com.just.toyim.util.Constants;

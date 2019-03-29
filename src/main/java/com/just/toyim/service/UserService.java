@@ -1,12 +1,12 @@
 package com.just.toyim.service;
 
 
-import com.just.toyim.pojo.HttpResponse;
-import com.just.toyim.pojo.User;
+import com.just.toyim.service.meta.HttpResponse;
+import com.just.toyim.service.meta.UserDto;
 import org.springframework.stereotype.Service;
 
-@Service
+
 public interface UserService {
 
-    HttpResponse login(User user);
+    HttpResponse login(UserDto user);
 }

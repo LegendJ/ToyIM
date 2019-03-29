@@ -1,4 +1,4 @@
-package com.just.toyim.pojo;
+package com.just.toyim.service.meta;
 
 import org.springframework.http.HttpStatus;
 import com.alibaba.fastjson.JSONObject;

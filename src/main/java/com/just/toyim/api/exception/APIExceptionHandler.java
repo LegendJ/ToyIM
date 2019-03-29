@@ -1,6 +1,6 @@
 package com.just.toyim.api.exception;
 
-import com.just.toyim.pojo.HttpResponse;
+import com.just.toyim.service.meta.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

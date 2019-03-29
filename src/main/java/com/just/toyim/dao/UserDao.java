@@ -1,4 +1,6 @@
 package com.just.toyim.dao;
 
-public interface UserDao {
+import com.just.toyim.dao.meta.UserInfo;
+
+public interface UserDao extends IBaseDao<UserInfo>{
 }

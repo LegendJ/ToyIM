@@ -38,7 +38,7 @@
             </div>
 
             <div class="clear"></div>
-            <input type="button" value="登录" onclick="index()"/>
+            <input type="button" value="登录" onclick="login()"/>
         </form>
     </div>
 </div>
@@ -50,7 +50,7 @@
     function login() {
         $.ajax({
             type: 'POST',
-            url: 'index.html',
+            url: 'login',
             dataType: 'json',
             data: {
                 username: $("#username").val(),

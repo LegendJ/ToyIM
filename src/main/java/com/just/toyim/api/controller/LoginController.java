@@ -1,8 +1,9 @@
 package com.just.toyim.api.controller;
 
-import com.just.toyim.pojo.HttpResponse;
-import com.just.toyim.pojo.User;
+import com.alibaba.fastjson.JSON;
+import com.just.toyim.service.meta.HttpResponse;
 import com.just.toyim.service.UserService;
+import com.just.toyim.service.meta.UserDto;
 import com.just.toyim.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +34,11 @@ public class LoginController {
 
     @PostMapping("/login")
     @ResponseBody
-    public HttpResponse login(HttpSession session, User user) {
+    public HttpResponse login(HttpSession session, UserDto user) {
 
         HttpResponse response = userService.login(user);
         if (response.getStatus() == 200) {
-            session.setAttribute(Constants.USER_TOKEN, user.getId());
+            session.setAttribute(Constants.USER_TOKEN, user.getUserId());
         }
         return response;
     }
@@ -55,4 +56,3 @@ public class LoginController {
     }
 }
 
-}

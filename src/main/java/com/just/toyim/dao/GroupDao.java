@@ -1,4 +1,6 @@
 package com.just.toyim.dao;
 
-public interface GroupDao {
+import com.just.toyim.dao.meta.GroupInfo;
+
+public interface GroupDao extends IBaseDao<GroupInfo>{
 }
