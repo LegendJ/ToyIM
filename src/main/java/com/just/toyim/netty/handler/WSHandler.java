@@ -19,11 +19,11 @@ public class WSHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
 
 
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame msg) throws Exception {
-        handlerWebSocketFrame(ctx, msg);
+        handleWebSocketFrame(ctx, msg);
     }
 
 
-    private void handlerWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
+    private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
         // 关闭请求
         if (frame instanceof CloseWebSocketFrame) {
             WebSocketServerHandshaker handshaker =

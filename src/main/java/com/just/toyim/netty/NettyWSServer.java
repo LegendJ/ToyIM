@@ -1,6 +1,7 @@
 package com.just.toyim.netty;
 
 import com.just.toyim.netty.handler.HttpHandler;
+import com.just.toyim.netty.handler.WSHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -12,8 +13,9 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class NettyWSServer {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyWSServer.class);
@@ -43,10 +45,11 @@ public class NettyWSServer {
                             ch.pipeline().addLast("aggregator", new HttpObjectAggregator(65536)); // 把HTTP头、HTTP体拼成完整的HTTP请求
                             ch.pipeline().addLast("http-chunked", new ChunkedWriteHandler()); // 方便大文件传输，不过实质上都是短的文本数据
                             ch.pipeline().addLast("http-handler", new HttpHandler());
+                            ch.pipeline().addLast("http-handler", new WSHandler());
                         }
                     }); //绑定I/O事件的处理类
             long end = System.currentTimeMillis();
-            logger.info("Netty Websocket start successfully, takes " + (end - begin) + " ms, listening port on " + port);
+            logger.info("Netty Websocket start successfully, takes " + (end - begin) + " ms, listening on port: " + port);
 
             serverChannelFuture = serverBootstrap.bind(port).sync();
         } catch (Exception e) {
@@ -71,8 +74,8 @@ public class NettyWSServer {
         try {
             bossGroupFuture.await();
             workerGroupFuture.await();
-        } catch (InterruptedException ignore) {
-            ignore.printStackTrace();
+        } catch (InterruptedException ok) {
+            ok.printStackTrace();
         }
     }
 
