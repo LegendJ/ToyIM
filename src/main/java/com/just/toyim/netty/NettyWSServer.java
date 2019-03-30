@@ -14,6 +14,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,6 +30,15 @@ public class NettyWSServer {
 
     private ChannelFuture serverChannelFuture;
 
+    @Autowired
+    private HttpHandler httpHandler;
+
+    @Autowired
+    private WSHandler wsHandler;
+
+    @Autowired
+    private WSIdleHandler wsIdleHandler;
+
 
     public void start(int port) {
         try {
@@ -42,12 +52,12 @@ public class NettyWSServer {
                     .childHandler(new ChannelInitializer<NioSocketChannel>(){
                         @Override
                         protected void initChannel(NioSocketChannel ch) {
-                            ch.pipeline().addLast("idle-discover", new WSIdleHandler()); // 空闲检测
+                            ch.pipeline().addLast("idle-discover", wsIdleHandler); // 空闲检测
                             ch.pipeline().addLast("http-codec", new HttpServerCodec()); // HTTP编码解码器
                             ch.pipeline().addLast("aggregator", new HttpObjectAggregator(65536)); // 把HTTP头、HTTP体拼成完整的HTTP请求
                             ch.pipeline().addLast("http-chunked", new ChunkedWriteHandler()); // 方便大文件传输，不过实质上都是短的文本数据
-                            ch.pipeline().addLast("http-handler", new HttpHandler());
-                            ch.pipeline().addLast("http-handler", new WSHandler());
+                            ch.pipeline().addLast("http-handler", httpHandler);
+                            ch.pipeline().addLast("http-handler", wsHandler);
                         }
                     }); //绑定I/O事件的处理类
             long end = System.currentTimeMillis();

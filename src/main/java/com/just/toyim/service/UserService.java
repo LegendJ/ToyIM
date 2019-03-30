@@ -9,4 +9,6 @@ import org.springframework.stereotype.Service;
 public interface UserService {
 
     HttpResponse login(UserDto user);
+
+    HttpResponse getUserById(long userId);
 }

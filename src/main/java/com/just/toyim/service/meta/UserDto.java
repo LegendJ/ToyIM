@@ -1,18 +1,25 @@
 package com.just.toyim.service.meta;
 
 
+import com.just.toyim.dao.meta.UserInfo;
+
+import java.util.List;
 
 public class UserDto {
 
-    int userId;
+    long userId;
     String username;
     String password;
+    String avatarUrl;
+    String role;
+    List<UserInfo> friendList;
+    List<GroupDto> groupDtos;
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -30,5 +37,45 @@ public class UserDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public List<UserInfo> getFriendList() {
+        return friendList;
+    }
+
+    public void setFriendList(List<UserInfo> friendList) {
+        this.friendList = friendList;
+    }
+
+    public List<GroupDto> getGroupDtos() {
+        return groupDtos;
+    }
+
+    public void setGroupDtos(List<GroupDto> groupDtos) {
+        this.groupDtos = groupDtos;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userId = userInfo.getId();
+        this.username = userInfo.getUsername();
+        this.password = userInfo.getPassword();
+        this.avatarUrl = userInfo.getAvatarUrl();
+        this.role = userInfo.getRole();
     }
 }

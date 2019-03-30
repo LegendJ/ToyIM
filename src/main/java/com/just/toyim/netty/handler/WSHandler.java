@@ -5,16 +5,21 @@ import com.just.toyim.service.meta.HttpResponse;
 import com.just.toyim.service.IMService;
 import com.just.toyim.service.impl.IMServiceImpl;
 import com.just.toyim.util.Constants;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+
+@Component
+@ChannelHandler.Sharable
 public class WSHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
     private static final Logger LOGGER = LoggerFactory.getLogger(WSHandler.class);
 
-    private IMService chatService = new IMServiceImpl();
+    private IMService IMService = new IMServiceImpl();
 
 
 
@@ -63,22 +68,22 @@ public class WSHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
         String type = (String) packet.get("type");
         switch (type) {
             case "REGISTER":
-                chatService.register(packet, ctx);
+                IMService.register(packet, ctx);
                 break;
             case "SINGLE_SENDING":
-                chatService.p2pSend(packet, ctx);
+                IMService.p2pSend(packet, ctx);
                 break;
             case "GROUP_SENDING":
-                chatService.groupSend(packet, ctx);
+                IMService.groupSend(packet, ctx);
                 break;
             case "FILE_MSG_SINGLE_SENDING":
-                chatService.FileMsgP2pSend(packet, ctx);
+                IMService.FileMsgP2pSend(packet, ctx);
                 break;
             case "FILE_MSG_GROUP_SENDING":
-                chatService.FileMsgGroupSend(packet, ctx);
+                IMService.FileMsgGroupSend(packet, ctx);
                 break;
             default:
-                chatService.typeError(ctx);
+                IMService.typeError(ctx);
                 break;
         }
     }
@@ -88,7 +93,7 @@ public class WSHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        chatService.remove(ctx);
+        IMService.remove(ctx);
     }
 
     /**

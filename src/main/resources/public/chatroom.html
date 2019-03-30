@@ -134,36 +134,36 @@
     if (!window.WebSocket) {
         window.WebSocket = window.MozWebSocket;
     }
-    //先暂时让他无法联通
+
     if (!window.WebSocket) {
-        socket = new WebSocket("ws://localhost:3333");
+        socket = new WebSocket("ws://localhost:2333");
         socket.onmessage = function (event) {
-            var json = JSON.parse(event.data);
-            if (json.status == 200) {
-                var type = json.data.type;
+            var packet = JSON.parse(event.data);
+            if (packet.status == 200) {
+                var type = packet.data.type;
                 console.log("收到一条新信息，类型为：" + type);
                 switch (type) {
                     case "REGISTER":
                         ws.registerReceive();
                         break;
                     case "SINGLE_SENDING":
-                        ws.singleReceive(json.data);
+                        ws.singleReceive(packet.data);
                         break;
                     case "GROUP_SENDING":
-                        ws.groupReceive(json.data);
+                        ws.groupReceive(packet.data);
                         break;
                     case "FILE_MSG_SINGLE_SENDING":
-                        ws.fileMsgSingleRecieve(json.data);
+                        ws.fileMsgSingleRecieve(packet.data);
                         break;
                     case "FILE_MSG_GROUP_SENDING":
-                        ws.fileMsgGroupRecieve(json.data);
+                        ws.fileMsgGroupRecieve(packet.data);
                         break;
                     default:
                         console.log("不正确的类型！");
                 }
             } else {
-                alert(json.msg);
-                console.log(json.msg);
+                alert(packet.msg);
+                console.log(packet.msg);
             }
         };
 

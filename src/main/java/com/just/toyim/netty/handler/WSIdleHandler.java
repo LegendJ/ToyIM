@@ -1,11 +1,16 @@
 package com.just.toyim.netty.handler;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
+
+@Component
+@ChannelHandler.Sharable
 public class WSIdleHandler extends IdleStateHandler {
 
     private static final int READER_IDLE_TIME = 15;
