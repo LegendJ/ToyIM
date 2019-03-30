@@ -14,7 +14,7 @@ import io.netty.channel.ChannelHandler.Sharable;
 
 @Component
 @Sharable
-public class HttpHandler extends SimpleChannelInboundHandler<Object> {
+public class HttpReqHandler extends SimpleChannelInboundHandler<Object> {
 
 
     @Override

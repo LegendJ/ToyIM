@@ -18,13 +18,13 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
 
     @Override
-    public List<UserInfo> findFriends(long userId) {
+    public List<UserInfo> findFriends(String userId) {
         String sql = "select u.* from toyim_user as u join toyim_friend as f on u.id = f.friend_id where f.user_id=:id ";
         return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("id", userId), new UserInfoRowMapper());
     }
 
     @Override
-    public List<UserInfo> findGroupUsers(long groupId) {
+    public List<UserInfo> findGroupUsers(String groupId) {
         String sql = "select u.* from toyim_user as u join toyim_group_user as g on u.id = g.user_id where g.group_id=:id ";
         return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("id", groupId), new UserInfoRowMapper());
     }
@@ -45,7 +45,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     }
 
     @Override
-    public UserInfo get(long id) {
+    public UserInfo get(String id) {
         String sql = "SELECT * FROM toyim_user WHERE id=:id";
         return queryForObject(sql, new MapSqlParameterSource("id", id), new UserInfoRowMapper());
     }
@@ -57,12 +57,16 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
     @Override
     public List<UserInfo> getRecordsByField(Map<String, Object> params) {
-        return null;
+        String head = "SELECT * FROM toyim_user WHERE ";
+        String sql = getQueryCondition(head, params);
+        return namedParameterJdbcTemplate.query(sql, params, new UserInfoRowMapper());
     }
 
     @Override
     public int getCountByFields(Map<String, Object> params) {
-        return 0;
+        String head = "SELECT count(*) FROM toyim_user WHERE ";
+        String sql = getQueryCondition(head, params);
+        return namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
     }
 
     class UserInfoRowMapper implements RowMapper<UserInfo> {
@@ -70,7 +74,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         @Override
         public UserInfo mapRow(ResultSet resultSet, int i) throws SQLException {
             UserInfo userInfo = new UserInfo();
-            userInfo.setId(resultSet.getLong("id"));
+            userInfo.setId(resultSet.getString("id"));
             userInfo.setUsername(resultSet.getString("username"));
             userInfo.setPassword(resultSet.getString("password"));
             userInfo.setAvatarUrl(resultSet.getString("avatarUrl"));

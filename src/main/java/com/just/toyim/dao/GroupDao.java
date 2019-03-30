@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface GroupDao extends IBaseDao<GroupInfo>{
 
-    List<GroupInfo> getByUserId(long userId);
+    List<GroupInfo> getByUserId(String userId);
 }

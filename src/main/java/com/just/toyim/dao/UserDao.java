@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface UserDao extends IBaseDao<UserInfo>{
 
-    List<UserInfo> findFriends(long userId);
+    List<UserInfo> findFriends(String userId);
 
-    List<UserInfo> findGroupUsers(long groupId);
+    List<UserInfo> findGroupUsers(String groupId);
 }

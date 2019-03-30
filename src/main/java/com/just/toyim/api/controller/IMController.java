@@ -36,7 +36,7 @@ public class IMController {
     @ResponseBody
     public HttpResponse getUserInfo(HttpSession session) {
         Object userId = session.getAttribute(Constants.USER_TOKEN);
-        return userService.getUserById((long) userId);
+        return userService.getUserById((String) userId);
     }
 
 

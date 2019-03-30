@@ -336,6 +336,30 @@ function logout() {
     });
 }
 
+function settings(){
+
+    alert("该功能正在Alpha版本测试中，既然点到这里了，那就给个10分吧n(*≧▽≦*)n！")
+
+}
+
+function pushMsg(){
+
+}
+
+function helper(){
+    alert("既然点到这里了，那就给个10分吧n(*≧▽≦*)n！")
+}
+
+function patch(){
+    alert("既然点到这里了，那就给个10分吧n(*≧▽≦*)n！")
+}
+
+function feedbackBox(){
+
+    alert("既然点到这里了，那就给个10分吧n(*≧▽≦*)n！")
+}
+
+
 $(".myfile").fileinput({
     uploadUrl: "chatroom/upload",
     uploadAsync: true, //默认异步上传
@@ -457,6 +481,10 @@ $('.sendBtn').on('click', function () {
         var $sendLi = $('.conLeft').find('li.bg');
         processFriendList.sending(news, $sendLi);
     }
+})
+
+$('.menu').on('mouseenter', function () {
+    $('.menuOn').show();
 })
 
 $('.ExP').on('mouseenter', function () {

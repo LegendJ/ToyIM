@@ -3,16 +3,16 @@ package com.just.toyim.dao.meta;
 
 public class GroupInfo {
 
-    private long groupId;
+    private String groupId;
     private String groupName;
     private String avatarUrl;
 
 
-    public long getGroupId() {
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(long groupId) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 

@@ -39,7 +39,7 @@ public interface IBaseDao<T> {
 	 * @param id
 	 * @return
 	 */
-	T get(long id);
+	T get(String id);
 
 	/**
 	 * 查找全部记录

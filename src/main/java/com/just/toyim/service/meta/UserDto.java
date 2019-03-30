@@ -7,7 +7,7 @@ import java.util.List;
 
 public class UserDto {
 
-    long userId;
+    String userId;
     String username;
     String password;
     String avatarUrl;
@@ -15,11 +15,11 @@ public class UserDto {
     List<UserInfo> friendList;
     List<GroupDto> groupDtos;
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

@@ -16,7 +16,21 @@
             <img id="avatarUrl" src=""/>
         </div>
         <div id="username" class="internetName"></div>
-        <button class="close logout" onclick="logout()">&times;</button>
+        <div class="menuOn">
+            <ul>
+                <li><button class="push" onclick="pushMsg()">消息推送</button></li>
+                <li><button class="settings" onclick="settings()">设置</button></li>
+                <li><button class="settings" onclick="helper()">帮助</button></li>
+                <li><button class="settings" onclick="patch()">升级</button></li>
+                <li><button class="feedback" onclick="feedbackBox()">反馈</button></li>
+            </ul>
+        </div>
+
+
+        <div id="menu" class="menu">
+            <img id="menuIcon" src="../static/img/menu-icon.png">
+        </div>
+        <button class="logout" onclick="logout()" >&times;</button>
     </div>
     <div class="context">
         <div class="conLeft">
@@ -135,7 +149,7 @@
         window.WebSocket = window.MozWebSocket;
     }
 
-    if (!window.WebSocket) {
+    if (window.WebSocket) {
         socket = new WebSocket("ws://localhost:2333");
         socket.onmessage = function (event) {
             var packet = JSON.parse(event.data);

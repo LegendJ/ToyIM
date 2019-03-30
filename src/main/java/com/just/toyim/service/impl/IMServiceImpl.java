@@ -34,7 +34,7 @@ public class IMServiceImpl implements IMService {
 
     @Override
     public void register(JSONObject packet, ChannelHandlerContext ctx) {
-        long userId = (long) packet.get("userId");
+        String userId = (String) packet.get("userId");
         Constants.onlineUserMap.put(userId, ctx);
         checkAndPush(ctx,userId);
         String responce = new HttpResponse().success()
@@ -47,8 +47,8 @@ public class IMServiceImpl implements IMService {
 
     @Override
     public void p2pSend(JSONObject packet, ChannelHandlerContext ctx) {
-        long fromUserId = (long) packet.get("fromUserId");
-        long toUserId = (long) packet.get("toUserId");
+        String fromUserId = (String) packet.get("fromUserId");
+        String toUserId = (String)  packet.get("toUserId");
         String content = (String) packet.get("content");
         ChannelHandlerContext toUserCtx = Constants.onlineUserMap.get(toUserId);
         HttpResponse response = new HttpResponse().success()
@@ -66,8 +66,8 @@ public class IMServiceImpl implements IMService {
 
     @Override
     public void groupSend(JSONObject packet, ChannelHandlerContext ctx) {
-        long fromUserId = (long) packet.get("fromUserId");
-        long toGroupId = (long) packet.get("toGroupId");
+        String fromUserId = (String) packet.get("fromUserId");
+        String toGroupId = (String)  packet.get("toUserId");
         String content = (String) packet.get("content");
 
         GroupInfo groupInfo = groupDao.get(toGroupId);
@@ -82,7 +82,7 @@ public class IMServiceImpl implements IMService {
                     .setData("type", IMCodeEnum.GROUP_SENDING);
 
             userDao.findGroupUsers(toGroupId).forEach(member -> {
-                        long toUserId = member.getId();
+                        String toUserId = member.getId();
                         ChannelHandlerContext toCtx = Constants.onlineUserMap.get(toUserId);
 
                         if (toCtx == null) {
@@ -126,7 +126,7 @@ public class IMServiceImpl implements IMService {
         sendMessage(ctx, response);
     }
 
-    private void checkAndPush(ChannelHandlerContext ctx,Long userId){
+    private void checkAndPush(ChannelHandlerContext ctx, String userId){
         Timeline<HttpResponse> t = Constants.msgSyncer.get(userId);
         if(t == null){
             Timeline<HttpResponse> timeline = new MemTimeline<>();
@@ -137,7 +137,7 @@ public class IMServiceImpl implements IMService {
         }
     }
 
-    private void cacheMessage(long toUserId,HttpResponse msg){
+    private void cacheMessage(String toUserId, HttpResponse msg){
         if(Constants.msgSyncer.get(toUserId) == null){
             Timeline<HttpResponse> timeline = new MemTimeline<>();
             Constants.msgSyncer.put(toUserId, timeline);

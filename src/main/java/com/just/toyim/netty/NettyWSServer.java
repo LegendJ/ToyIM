@@ -1,9 +1,8 @@
 package com.just.toyim.netty;
 
-import com.just.toyim.netty.handler.HttpHandler;
+import com.just.toyim.netty.handler.HttpReqHandler;
 import com.just.toyim.netty.handler.WSHandler;
 import com.just.toyim.netty.handler.WSIdleHandler;
-import com.just.toyim.service.UserService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -17,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 @Component
 public class NettyWSServer {
@@ -34,7 +31,7 @@ public class NettyWSServer {
     private ChannelFuture serverChannelFuture;
 
     @Autowired
-    private HttpHandler httpHandler;
+    private HttpReqHandler httpReqHandler;
 
     @Autowired
     private WSHandler wsHandler;
@@ -56,12 +53,12 @@ public class NettyWSServer {
                     .childHandler(new ChannelInitializer<NioSocketChannel>(){
                         @Override
                         protected void initChannel(NioSocketChannel ch) {
-//                            ch.pipeline().addLast("idle-discover", wsIdleHandler); // 空闲检测
+                            ch.pipeline().addLast("idle-discover", wsIdleHandler); // 空闲检测
                             ch.pipeline().addLast("http-codec", new HttpServerCodec()); // HTTP编码解码器
                             ch.pipeline().addLast("aggregator", new HttpObjectAggregator(65536)); // 把HTTP头、HTTP体拼成完整的HTTP请求
                             ch.pipeline().addLast("http-chunked", new ChunkedWriteHandler()); // 方便大文件传输，不过实质上都是短的文本数据
-                            ch.pipeline().addLast("http-handler", httpHandler);
-                            ch.pipeline().addLast("http-handler", wsHandler);
+                            ch.pipeline().addLast("http-handler", httpReqHandler);
+                            ch.pipeline().addLast("websocket-handler", wsHandler);
                         }
                     }); //绑定I/O事件的处理类
             long end = System.currentTimeMillis();

@@ -16,7 +16,7 @@ import java.util.Map;
 public class GroupDaoImpl extends BaseDao implements GroupDao {
 
     @Override
-    public List<GroupInfo> getByUserId(long userId) {
+    public List<GroupInfo> getByUserId(String userId) {
         String sql = "select g.* from toyim_user as u join toyim_group_user as g on u.id = g.user_id where u.id=:id ";
         return namedParameterJdbcTemplate.query(sql,new MapSqlParameterSource("id",userId),new GroupInfoRowMapper());
     }
@@ -37,7 +37,7 @@ public class GroupDaoImpl extends BaseDao implements GroupDao {
     }
 
     @Override
-    public GroupInfo get(long id) {
+    public GroupInfo get(String id) {
         String sql = "SELECT * FROM toyim_group WHERE id=:id";
         return queryForObject(sql, new MapSqlParameterSource("id", id), new GroupInfoRowMapper());
     }
@@ -63,7 +63,7 @@ public class GroupDaoImpl extends BaseDao implements GroupDao {
         public GroupInfo mapRow(ResultSet resultSet, int i) throws SQLException {
             GroupInfo info = new GroupInfo();
 
-            info.setGroupId(resultSet.getLong("id"));
+            info.setGroupId(resultSet.getString("id"));
             info.setAvatarUrl(resultSet.getString("avatarUrl"));
             info.setGroupName(resultSet.getString("groupName"));
             return info;

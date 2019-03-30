@@ -7,7 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MemTimeline<T> implements Timeline<T> {
 
     private static final int MAX_STORE_CAPACITY = 10000;
-    LinkedBlockingQueue<T> queue = new LinkedBlockingQueue<>(MAX_STORE_CAPACITY);
+    LinkedBlockingQueue<T> queue = new LinkedBlockingQueue<>();
 
 
     @Override
