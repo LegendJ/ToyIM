@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.just.toyim.dao.GroupDao;
 import com.just.toyim.dao.UserDao;
 import com.just.toyim.dao.meta.GroupInfo;
+import com.just.toyim.dao.meta.UserInfo;
 import com.just.toyim.netty.timeline.MemTimeline;
 import com.just.toyim.netty.timeline.Timeline;
 import com.just.toyim.service.IMService;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 @Service
 public class IMServiceImpl implements IMService {
@@ -29,8 +31,6 @@ public class IMServiceImpl implements IMService {
 
     @Autowired
     UserDao userDao;
-
-
 
     @Override
     public void register(JSONObject packet, ChannelHandlerContext ctx) {
@@ -67,7 +67,7 @@ public class IMServiceImpl implements IMService {
     @Override
     public void groupSend(JSONObject packet, ChannelHandlerContext ctx) {
         String fromUserId = (String) packet.get("fromUserId");
-        String toGroupId = (String)  packet.get("toUserId");
+        String toGroupId = (String)  packet.get("toGroupId");
         String content = (String) packet.get("content");
 
         GroupInfo groupInfo = groupDao.get(toGroupId);
@@ -82,16 +82,41 @@ public class IMServiceImpl implements IMService {
                     .setData("type", IMCodeEnum.GROUP_SENDING);
 
             userDao.findGroupUsers(toGroupId).forEach(member -> {
-                        String toUserId = member.getId();
+                        String toUserId = member.getUserId();
                         ChannelHandlerContext toCtx = Constants.onlineUserMap.get(toUserId);
 
-                        if (toCtx == null) {
-                            cacheMessage(toUserId,response);
-                        }else if (toUserId != fromUserId) {
-                            sendMessage(toCtx, response.toString());
-                        }
+                if (toCtx == null && toUserId.equals(fromUserId)) {
+                    cacheMessage(toUserId, response);
+                } else if (toUserId.equals(fromUserId)) {
+                    sendMessage(toCtx, response.toString());
+                }
                     });
         }
+    }
+
+    @Override
+    public void msgPush(JSONObject packet, ChannelHandlerContext ctx) {
+        String fromUserId = (String) packet.get("fromUserId");
+        String content = (String) packet.get("content");
+
+        List<UserInfo> friends = userDao.findFriends(fromUserId);
+        if (friends != null) {
+            for (UserInfo friend : friends) {
+                String toUserId = friend.getUserId();
+                ChannelHandlerContext toUserCtx = Constants.onlineUserMap.get(toUserId);
+                HttpResponse response = new HttpResponse().success()
+                        .setData("fromUserId", fromUserId)
+                        .setData("content", content)
+                        .setData("type", IMCodeEnum.SINGLE_SENDING);
+                if (toUserCtx == null) {
+                    // 缓存离线消息
+                    cacheMessage(toUserId,response);
+                } else {
+                    sendMessage(toUserCtx, response.toString());
+                }
+            }
+        }
+
     }
 
     @Override
@@ -127,25 +152,32 @@ public class IMServiceImpl implements IMService {
     }
 
     private void checkAndPush(ChannelHandlerContext ctx, String userId){
-        Timeline<HttpResponse> t = Constants.msgSyncer.get(userId);
-        if(t == null){
-            Timeline<HttpResponse> timeline = new MemTimeline<>();
-            Constants.msgSyncer.put(userId, timeline);
-        }else if (!t.isEmpty()){
-            // push all msg
-            t.getAll().forEach(msg->sendMessage(ctx,msg.toString()));
+        if (userDao.get(userId) != null) {
+            Timeline<HttpResponse> t = Constants.msgSyncer.get(userId);
+            if(t == null){
+                Timeline<HttpResponse> timeline = new MemTimeline<>();
+                Constants.msgSyncer.put(userId, timeline);
+            }else if (!t.isEmpty()){
+                // push all msg
+                t.getAll().forEach(msg->sendMessage(ctx,msg.toString()));
+            }
         }
+
     }
 
     private void cacheMessage(String toUserId, HttpResponse msg){
-        if(Constants.msgSyncer.get(toUserId) == null){
-            Timeline<HttpResponse> timeline = new MemTimeline<>();
-            Constants.msgSyncer.put(toUserId, timeline);
+        if (userDao.get(toUserId) != null) {
+            if(Constants.msgSyncer.get(toUserId) == null ){
+                Timeline<HttpResponse> timeline = new MemTimeline<>();
+                Constants.msgSyncer.put(toUserId, timeline);
+            }
+            Constants.msgSyncer.get(toUserId).add(msg);
         }
-        Constants.msgSyncer.get(toUserId).add(msg);
+
     }
 
     private void sendMessage(ChannelHandlerContext ctx, String message) {
+        LOGGER.info("send message {} ",message);
         ctx.channel().writeAndFlush(new TextWebSocketFrame(message));
     }
 }

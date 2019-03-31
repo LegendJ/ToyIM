@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
                 return new HttpResponse().error("用户名或密码错误");
             }
             UserInfo userInfo = userInfos.get(0);
-            user.setUserId(userInfo.getId());
+            user.setUserId(userInfo.getUserId());
             return new HttpResponse().success();
         }else {
             return new HttpResponse().error("密码或者用户名不能为空");
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
             groupDtos.add(groupDto);
         }
 
-        userDto.setGroupDtos(groupDtos);
+        userDto.setGroupList(groupDtos);
         return new HttpResponse().success().setData("userInfo", userDto);
     }
 

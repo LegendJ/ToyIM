@@ -5,7 +5,7 @@ public class GroupInfo {
 
     private String groupId;
     private String groupName;
-    private String avatarUrl;
+    private String groupAvatarUrl;
 
 
     public String getGroupId() {
@@ -24,11 +24,11 @@ public class GroupInfo {
         this.groupName = groupName;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public String getGroupAvatarUrl() {
+        return groupAvatarUrl;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setGroupAvatarUrl(String groupAvatarUrl) {
+        this.groupAvatarUrl = groupAvatarUrl;
     }
 }

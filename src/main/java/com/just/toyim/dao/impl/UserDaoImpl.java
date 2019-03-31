@@ -1,31 +1,31 @@
 package com.just.toyim.dao.impl;
 
 import com.just.toyim.dao.UserDao;
-import com.just.toyim.dao.meta.GroupInfo;
 import com.just.toyim.dao.meta.UserInfo;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Repository
+@Component
 public class UserDaoImpl extends BaseDao implements UserDao {
 
 
     @Override
     public List<UserInfo> findFriends(String userId) {
-        String sql = "select u.* from toyim_user as u join toyim_friend as f on u.id = f.friend_id where f.user_id=:id ";
+        String sql = "select distinct u.* from toyim_user as u join toyim_friend as f on u.id = f.friend_id where f.user_id=:id ";
         return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("id", userId), new UserInfoRowMapper());
     }
 
     @Override
     public List<UserInfo> findGroupUsers(String groupId) {
-        String sql = "select u.* from toyim_user as u join toyim_group_user as g on u.id = g.user_id where g.group_id=:id ";
+        String sql = "select distinct u.* from toyim_user as u join toyim_group_user as g on u.id = g.user_id where g.group_id=:id ";
         return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("id", groupId), new UserInfoRowMapper());
     }
 
@@ -74,7 +74,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         @Override
         public UserInfo mapRow(ResultSet resultSet, int i) throws SQLException {
             UserInfo userInfo = new UserInfo();
-            userInfo.setId(resultSet.getString("id"));
+            userInfo.setUserId(resultSet.getString("id"));
             userInfo.setUsername(resultSet.getString("username"));
             userInfo.setPassword(resultSet.getString("password"));
             userInfo.setAvatarUrl(resultSet.getString("avatarUrl"));

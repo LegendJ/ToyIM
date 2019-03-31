@@ -12,6 +12,8 @@ public interface IMService {
 
     void groupSend(JSONObject packet, ChannelHandlerContext ctx);
 
+    void msgPush(JSONObject packet, ChannelHandlerContext ctx);
+
     void FileMsgP2pSend(JSONObject packet, ChannelHandlerContext ctx);
 
     void FileMsgGroupSend(JSONObject packet, ChannelHandlerContext ctx);

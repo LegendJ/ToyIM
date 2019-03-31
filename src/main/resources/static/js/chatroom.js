@@ -11,11 +11,13 @@ function setUserInfo() {
             if (data.status == 200) {
                 var userInfo = data.data.userInfo;
                 userId = userInfo.userId;
+                userRole = userInfo.role;
                 $("#username").html(userInfo.username);
                 $("#avatarUrl").attr("src", userInfo.avatarUrl);
                 var groupListHTML = "";
                 var groupList = userInfo.groupList;
                 for (var i = 0; i < groupList.length; i++) {
+                    sentMessageMap.put("group"+groupList[i].groupId,new Array());
                     groupListHTML +=
                         '<li>' +
                         '<div class="liLeft"><img src="' + groupList[i].groupAvatarUrl + '"></div>' +
@@ -31,6 +33,7 @@ function setUserInfo() {
                 var friendListHTML = "";
                 var friendList = userInfo.friendList;
                 for (var i = 0; i < friendList.length; i++) {
+                    sentMessageMap.put(friendList[i].userId,new Array());
                     friendListHTML +=
                         '<li>' +
                         '<div class="liLeft"><img src="' + friendList[i].avatarUrl + '"></div>' +
@@ -63,16 +66,16 @@ function getSessionKey() {
 
 function setSentMessageMap() {
     sentMessageMap = new SentMessageMap();
-    sentMessageMap.put("001", new Array());
-    sentMessageMap.put("002", new Array());
-    sentMessageMap.put("003", new Array());
-    sentMessageMap.put("004", new Array());
-    sentMessageMap.put("005", new Array());
-    sentMessageMap.put("006", new Array());
-    sentMessageMap.put("007", new Array());
-    sentMessageMap.put("008", new Array());
-    sentMessageMap.put("009", new Array());
-    sentMessageMap.put("01", new Array());
+//     sentMessageMap.put("1", new Array());
+//     sentMessageMap.put("2", new Array());
+//     sentMessageMap.put("3", new Array());
+//     sentMessageMap.put("4", new Array());
+//     sentMessageMap.put("5", new Array());
+//     sentMessageMap.put("6", new Array());
+//     sentMessageMap.put("7", new Array());
+//     sentMessageMap.put("8", new Array());
+//     sentMessageMap.put("9", new Array());
+//     sentMessageMap.put("10", new Array());
 }
 
 var ws = {
@@ -118,6 +121,20 @@ var ws = {
                 "toGroupId": toGroupId,
                 "content": content,
                 "type": "GROUP_SENDING"
+            };
+            socket.send(JSON.stringify(data));
+        } else {
+            alert("Websocket连接没有开启！");
+        }
+    },
+
+    // 推送消息，由服务器查找所有需要推送的用户id
+    msgPush:function(fromUserId,content){
+        if (socket.readyState == WebSocket.OPEN) {
+            var data = {
+                "fromUserId": fromUserId,
+                "content": content,
+                "type": "MSG_PUSHING"
             };
             socket.send(JSON.stringify(data));
         } else {
@@ -336,28 +353,24 @@ function logout() {
     });
 }
 
-function settings(){
+function pushMsg(role){
+    if (role == 'admin') {
 
-    alert("该功能正在Alpha版本测试中，既然点到这里了，那就给个10分吧n(*≧▽≦*)n！")
+        var content = prompt("请输入要推送的消息(默认推送给所有用户)","");
 
+        if (content) {
+            var fromUserId = userId;
+            ws.msgPush(fromUserId,content)
+        }else{
+            alert("推送内容不能为空")
+        }
+
+
+    } else {
+        alert('你还是个弟弟，想要使用此功能请氪金~')
+    }
 }
 
-function pushMsg(){
-
-}
-
-function helper(){
-    alert("既然点到这里了，那就给个10分吧n(*≧▽≦*)n！")
-}
-
-function patch(){
-    alert("既然点到这里了，那就给个10分吧n(*≧▽≦*)n！")
-}
-
-function feedbackBox(){
-
-    alert("既然点到这里了，那就给个10分吧n(*≧▽≦*)n！")
-}
 
 
 $(".myfile").fileinput({
@@ -487,6 +500,28 @@ $('.menu').on('mouseenter', function () {
     $('.menuOn').show();
 })
 
+$('.menuOn li').on('mouseenter', function () {
+// 点击效果
+    $(this).addClass('bg').siblings().removeClass('bg');
+});
+
+$('.menuOn').on('mouseleave', function () {
+    $('.menuOn').hide();
+});
+
+$('.menuOn li').on('click', function () {
+
+    var type = $(this).children('span').attr('class');
+    $('.menuOn').hide();
+    var role = userRole;
+    if (type == 'msgPush') {
+        pushMsg(role)
+    }else{
+        alert("该功能处在Alpha测试阶段，既然点到这里了，那就给个10分吧n(*≧▽≦*)n！")
+    }
+
+});
+
 $('.ExP').on('mouseenter', function () {
     $('.emjon').show();
 })
@@ -549,7 +584,7 @@ function friendLiClickEvent() {
         messageArray = sentMessageMap.get(toUserId);
         $('#toUserId').val(toUserId);
     } else {
-        messageArray = sentMessageMap.get(toGroupId);
+        messageArray = sentMessageMap.get("group"+toGroupId);
         $('#toGroupId').val(toGroupId);
     }
     for (var i = 0; i < messageArray.length; i++) {
@@ -597,7 +632,7 @@ var processMsgBox = {
         if (toUserId.length != 0) {
             sentMessageMap.get(toUserId).push($('.newsList li').last().prop("outerHTML"));
         } else {
-            sentMessageMap.get(toGroupId).push($('.newsList li').last().prop("outerHTML"));
+            sentMessageMap.get("group"+toGroupId).push($('.newsList li').last().prop("outerHTML"));
         }
 
         // 4. 滚动条往底部移
@@ -613,7 +648,7 @@ var processMsgBox = {
         if (toUserId.length != 0) {
             sentMessageMap.get(toUserId).push($('.newsList li').last().prop("outerHTML"));
         } else {
-            sentMessageMap.get(toGroupId).push($('.newsList li').last().prop("outerHTML"));
+            sentMessageMap.get("group"+toGroupId).push($('.newsList li').last().prop("outerHTML"));
         }
 
         // 3. 消息框往下移
@@ -697,7 +732,7 @@ var processMsgBox = {
         }
 
         // 4. 把 调整后的消息html标签字符串 添加到已发送用户消息表，并清空暂存区
-        sentMessageMap.get(toGroupId).push($('.newsList-temp li').last().prop("outerHTML"));
+        sentMessageMap.get("group"+toGroupId).push($('.newsList-temp li').last().prop("outerHTML"));
         $('.newsList-temp').empty();
 
         // 5. 滚动条滑到底

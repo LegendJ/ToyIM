@@ -13,7 +13,7 @@ public class UserDto {
     String avatarUrl;
     String role;
     List<UserInfo> friendList;
-    List<GroupDto> groupDtos;
+    List<GroupDto> groupList;
 
     public String getUserId() {
         return userId;
@@ -63,16 +63,16 @@ public class UserDto {
         this.friendList = friendList;
     }
 
-    public List<GroupDto> getGroupDtos() {
-        return groupDtos;
+    public List<GroupDto> getGroupList() {
+        return groupList;
     }
 
-    public void setGroupDtos(List<GroupDto> groupDtos) {
-        this.groupDtos = groupDtos;
+    public void setGroupList(List<GroupDto> groupList) {
+        this.groupList = groupList;
     }
 
     public void setUserInfo(UserInfo userInfo) {
-        this.userId = userInfo.getId();
+        this.userId = userInfo.getUserId();
         this.username = userInfo.getUsername();
         this.password = userInfo.getPassword();
         this.avatarUrl = userInfo.getAvatarUrl();

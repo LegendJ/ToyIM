@@ -15,22 +15,22 @@
         <div class="headImg">
             <img id="avatarUrl" src=""/>
         </div>
-        <div id="username" class="internetName"></div>
-        <div class="menuOn">
-            <ul>
-                <li><button class="push" onclick="pushMsg()">消息推送</button></li>
-                <li><button class="settings" onclick="settings()">设置</button></li>
-                <li><button class="settings" onclick="helper()">帮助</button></li>
-                <li><button class="settings" onclick="patch()">升级</button></li>
-                <li><button class="feedback" onclick="feedbackBox()">反馈</button></li>
-            </ul>
+        <div id="username" class="internetName">
         </div>
 
+        <div class="menuOn">
+            <ul>
+                <li><span class="msgPush" >消息推送</span></li>
+                <li><span class="settings" >设置</span></li>
+                <li><span class="helper" >帮助</span></li>
+                <li><span class="feedback">反馈</span></li>
+            </ul>
+        </div>
 
         <div id="menu" class="menu">
             <img id="menuIcon" src="../static/img/menu-icon.png">
         </div>
-        <button class="logout" onclick="logout()" >&times;</button>
+        <button class="close logout" title="退出登录" onclick="logout()" style="color: #000000;font-size: 25px" >&times;</button>
     </div>
     <div class="context">
         <div class="conLeft">
@@ -139,6 +139,7 @@
 <script type="text/javascript" src="../static/js/chatroom.js"></script>
 <script type="text/javascript">
     var userId;
+    var userRole;
     var socket;
     var sentMessageMap;
 

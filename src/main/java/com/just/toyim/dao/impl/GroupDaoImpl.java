@@ -2,9 +2,9 @@ package com.just.toyim.dao.impl;
 
 import com.just.toyim.dao.GroupDao;
 import com.just.toyim.dao.meta.GroupInfo;
-import com.just.toyim.dao.meta.UserInfo;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -13,12 +13,13 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Component
 public class GroupDaoImpl extends BaseDao implements GroupDao {
 
     @Override
     public List<GroupInfo> getByUserId(String userId) {
-        String sql = "select g.* from toyim_user as u join toyim_group_user as g on u.id = g.user_id where u.id=:id ";
-        return namedParameterJdbcTemplate.query(sql,new MapSqlParameterSource("id",userId),new GroupInfoRowMapper());
+        String sql = "select distinct g.* from (toyim_user as u join toyim_group_user as gu on u.id = gu.user_id) join toyim_group as g on gu.group_id = g.id where u.id=:id ";
+        return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("id", userId), new GroupInfoRowMapper());
     }
 
     @Override
@@ -64,7 +65,7 @@ public class GroupDaoImpl extends BaseDao implements GroupDao {
             GroupInfo info = new GroupInfo();
 
             info.setGroupId(resultSet.getString("id"));
-            info.setAvatarUrl(resultSet.getString("avatarUrl"));
+            info.setGroupAvatarUrl(resultSet.getString("groupAvatarUrl"));
             info.setGroupName(resultSet.getString("groupName"));
             return info;
         }

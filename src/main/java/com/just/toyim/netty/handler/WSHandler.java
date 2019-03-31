@@ -11,6 +11,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -19,8 +20,8 @@ import org.springframework.stereotype.Component;
 public class WSHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
     private static final Logger LOGGER = LoggerFactory.getLogger(WSHandler.class);
 
-    private IMService IMService = new IMServiceImpl();
-
+    @Autowired
+    private IMService IMService ;
 
 
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame msg) throws Exception {
@@ -76,6 +77,8 @@ public class WSHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
             case "GROUP_SENDING":
                 IMService.groupSend(packet, ctx);
                 break;
+            case "MSG_PUSHING":
+                IMService.msgPush(packet,ctx);
             case "FILE_MSG_SINGLE_SENDING":
                 IMService.FileMsgP2pSend(packet, ctx);
                 break;

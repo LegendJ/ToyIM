@@ -9,7 +9,7 @@ public class GroupDto {
 
     private String groupId;
     private String groupName;
-    private String avatarUrl;
+    private String groupAvatarUrl;
     private List<UserInfo> members;
 
     public String getGroupId() {
@@ -28,12 +28,12 @@ public class GroupDto {
         this.groupName = groupName;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public String getGroupAvatarUrl() {
+        return groupAvatarUrl;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setGroupAvatarUrl(String groupAvatarUrl) {
+        this.groupAvatarUrl = groupAvatarUrl;
     }
 
     public List<UserInfo> getMembers() {
@@ -47,6 +47,6 @@ public class GroupDto {
     public void setGroupInfo(GroupInfo groupInfo) {
         groupId = groupInfo.getGroupId();
         groupName = groupInfo.getGroupName();
-        avatarUrl = groupInfo.getAvatarUrl();
+        groupAvatarUrl = groupInfo.getGroupAvatarUrl();
     }
 }

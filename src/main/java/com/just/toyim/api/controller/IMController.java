@@ -28,7 +28,7 @@ public class IMController {
         if(userId == null){
             return new ModelAndView("login.html");
         }
-        return new ModelAndView("chatroom.html");
+        return new ModelAndView("/public/chatroom.html");
 
     }
 
