@@ -204,7 +204,7 @@ var ws = {
             }
         })
         //TODO(just): 如果是陌生人应该访问服务器拉取用户信息，暂时hardcode
-        groupMemberMap[toGroupId].forEach(function (member) {
+        groupMemberMap[1].forEach(function (member) {
             if (member.userId == fromUserId) {
                 fromAvatarUrl = member.avatarUrl;
             }
