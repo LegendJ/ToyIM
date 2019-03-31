@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MemTimeline<T> implements Timeline<T> {
 
     private static final int MAX_STORE_CAPACITY = 10000;
+    //TODO(just) : 每次读完数据不移除，移动指针实现客户端读取最近消息。可以使用Guava.Cache
     LinkedBlockingQueue<T> queue = new LinkedBlockingQueue<>();
 
 
