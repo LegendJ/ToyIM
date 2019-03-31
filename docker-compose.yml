@@ -1,0 +1,38 @@
+version : '2'
+services:
+
+  mysqldbserver:
+#    build:
+#      context: .
+#      dockerfile: mysqldb.dockerfile
+    image:
+      just/mysql:latest
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    networks:
+      - net-spring-db
+    environment:
+      MYSQL_DATABASE: toyim
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: 123456
+    container_name: mysqldbserver
+
+  springappserver:
+    #    build:
+    #      context: .
+    #      dockerfile: springapp.dockerfile
+    image: just/springapp:latest
+    ports:
+      - "8081:8081"
+      - "2333:2333"
+    networks:
+      - net-spring-db
+    links:
+      - mysqldbserver:db
+
+networks:
+  net-spring-db:
+    driver: bridge

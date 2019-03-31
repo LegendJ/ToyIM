@@ -1,0 +1,9 @@
+# IntelliJ project files
+.git
+.idea
+.mvn
+*.iml
+src/*
+target/*
+
+!target/kstream-app-template-1.0-SNAPSHOT-jar-with-dependencies.jar

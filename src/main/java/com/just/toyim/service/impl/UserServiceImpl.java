@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
             params.put("password", user.getPassword());
             List<UserInfo> userInfos = userDao.getRecordsByField(params);
 
-            if (userInfos == null){
+            if (userInfos == null || userInfos.isEmpty()){
                 return new HttpResponse().error("用户名或密码错误");
             }
             UserInfo userInfo = userInfos.get(0);
