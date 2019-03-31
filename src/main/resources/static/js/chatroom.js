@@ -1,6 +1,7 @@
 var sessionkey;
 
 function setUserInfo() {
+
     $.ajax({
         type: 'POST',
         url: 'chatroom/get_userinfo',
@@ -16,8 +17,11 @@ function setUserInfo() {
                 $("#avatarUrl").attr("src", userInfo.avatarUrl);
                 var groupListHTML = "";
                 var groupList = userInfo.groupList;
+
                 for (var i = 0; i < groupList.length; i++) {
+                    groupMemberMap[groupList[i].groupId] = groupList[i].members;
                     sentMessageMap.put("group"+groupList[i].groupId,new Array());
+
                     groupListHTML +=
                         '<li>' +
                         '<div class="liLeft"><img src="' + groupList[i].groupAvatarUrl + '"></div>' +
@@ -66,6 +70,7 @@ function getSessionKey() {
 
 function setSentMessageMap() {
     sentMessageMap = new SentMessageMap();
+    groupMemberMap = new Object();
 //     sentMessageMap.put("1", new Array());
 //     sentMessageMap.put("2", new Array());
 //     sentMessageMap.put("3", new Array());
@@ -198,6 +203,12 @@ var ws = {
                 $receiveLi = $(this).parent(".liRight").parent("li");
             }
         })
+        //TODO(just): 如果是陌生人应该访问服务器拉取用户信息，暂时hardcode
+        groupMemberMap[toGroupId].forEach(function (member) {
+            if (member.userId == fromUserId) {
+                fromAvatarUrl = member.avatarUrl;
+            }
+        });
         var answer = '';
         answer += '<li>' +
             '<div class="answers">' + content + '</div>' +
@@ -218,13 +229,19 @@ var ws = {
         var toGroupId = data.toGroupId;
         var fromAvatarUrl;
         var $receiveLi;
-        $('.conLeft').find('span.hidden-userId').each(function () {
-            if (this.innerHTML == fromUserId) {
-                fromAvatarUrl = $(this).parent(".liRight")
-                    .siblings(".liLeft").children('img').attr("src");
-                /* $receiveLi = $(this).parent(".liRight").parent("li"); */
+        groupMemberMap[toGroupId].forEach(function (member) {
+            if (member.userId == fromUserId) {
+                fromAvatarUrl = member.avatarUrl;
             }
-        })
+        });
+
+        // $('.conLeft').find('span.hidden-userId').each(function () {
+        //     if (this.innerHTML == fromUserId) {
+        //         fromAvatarUrl = $(this).parent(".liRight")
+        //             .siblings(".liLeft").children('img').attr("src");
+        //         /* $receiveLi = $(this).parent(".liRight").parent("li"); */
+        //     }
+        // })
         $('.conLeft').find('span.hidden-groupId').each(function () {
             if (this.innerHTML == toGroupId) {
                 $receiveLi = $(this).parent(".liRight").parent("li");

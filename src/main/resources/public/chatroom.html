@@ -142,9 +142,11 @@
     var userRole;
     var socket;
     var sentMessageMap;
+    var groupMemberMap;
 
-    setUserInfo();
     setSentMessageMap();
+    setUserInfo();
+
 
     if (!window.WebSocket) {
         window.WebSocket = window.MozWebSocket;

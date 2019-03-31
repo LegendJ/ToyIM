@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
         List<GroupDto> groupDtos = new ArrayList<>();
         for(GroupInfo groupInfo: groupInfos){
             GroupDto groupDto = new GroupDto();
-            List<UserInfo> members = userDao.findGroupUsers(userId);
+            List<UserInfo> members = userDao.findGroupUsers(groupInfo.getGroupId());
             groupDto.setMembers(members);
             groupDto.setGroupInfo(groupInfo);
             groupDtos.add(groupDto);
