@@ -36,7 +36,7 @@ public class IMServiceImpl implements IMService {
     public void register(JSONObject packet, ChannelHandlerContext ctx) {
         String userId = (String) packet.get("userId");
         Constants.onlineUserMap.put(userId, ctx);
-        checkAndPush(ctx,userId);
+        checkAndPush(ctx, userId);
         String responce = new HttpResponse().success()
                 .setData("type", IMCodeEnum.REGISTER)
                 .toString();
@@ -48,7 +48,7 @@ public class IMServiceImpl implements IMService {
     @Override
     public void p2pSend(JSONObject packet, ChannelHandlerContext ctx) {
         String fromUserId = (String) packet.get("fromUserId");
-        String toUserId = (String)  packet.get("toUserId");
+        String toUserId = (String) packet.get("toUserId");
         String content = (String) packet.get("content");
         ChannelHandlerContext toUserCtx = Constants.onlineUserMap.get(toUserId);
         HttpResponse response = new HttpResponse().success()
@@ -58,7 +58,7 @@ public class IMServiceImpl implements IMService {
 
         if (toUserCtx == null) {
             // 缓存离线消息
-            cacheMessage(toUserId,response);
+            cacheMessage(toUserId, response);
         } else {
             sendMessage(toUserCtx, response.toString());
         }
@@ -67,7 +67,7 @@ public class IMServiceImpl implements IMService {
     @Override
     public void groupSend(JSONObject packet, ChannelHandlerContext ctx) {
         String fromUserId = (String) packet.get("fromUserId");
-        String toGroupId = (String)  packet.get("toGroupId");
+        String toGroupId = (String) packet.get("toGroupId");
         String content = (String) packet.get("content");
 
         GroupInfo groupInfo = groupDao.get(toGroupId);
@@ -82,15 +82,15 @@ public class IMServiceImpl implements IMService {
                     .setData("type", IMCodeEnum.GROUP_SENDING);
 
             userDao.findGroupUsers(toGroupId).forEach(member -> {
-                        String toUserId = member.getUserId();
-                        ChannelHandlerContext toCtx = Constants.onlineUserMap.get(toUserId);
+                String toUserId = member.getUserId();
+                ChannelHandlerContext toCtx = Constants.onlineUserMap.get(toUserId);
 
-                if (toCtx == null && toUserId.equals(fromUserId)) {
+                if (toCtx == null && !toUserId.equals(fromUserId)) {
                     cacheMessage(toUserId, response);
-                } else if (toUserId.equals(fromUserId)) {
+                } else if (!toUserId.equals(fromUserId)) {
                     sendMessage(toCtx, response.toString());
                 }
-                    });
+            });
         }
     }
 
@@ -110,7 +110,7 @@ public class IMServiceImpl implements IMService {
                         .setData("type", IMCodeEnum.SINGLE_SENDING);
                 if (toUserCtx == null) {
                     // 缓存离线消息
-                    cacheMessage(toUserId,response);
+                    cacheMessage(toUserId, response);
                 } else {
                     sendMessage(toUserCtx, response.toString());
                 }
@@ -131,8 +131,8 @@ public class IMServiceImpl implements IMService {
 
     @Override
     public void remove(ChannelHandlerContext ctx) {
-        Constants.onlineUserMap.forEach((k,onlineCtx)->{
-            if(onlineCtx == ctx){
+        Constants.onlineUserMap.forEach((k, onlineCtx) -> {
+            if (onlineCtx == ctx) {
                 LOGGER.info("正在移除握手实例...");
                 Constants.WSHandshakerMap.remove(ctx.channel().id().asLongText());
                 LOGGER.info(MessageFormat.format("已移除握手实例，当前握手实例总数为：{0}"
@@ -151,23 +151,23 @@ public class IMServiceImpl implements IMService {
         sendMessage(ctx, response);
     }
 
-    private void checkAndPush(ChannelHandlerContext ctx, String userId){
+    private void checkAndPush(ChannelHandlerContext ctx, String userId) {
         if (userDao.get(userId) != null) {
             Timeline<HttpResponse> t = Constants.msgSyncer.get(userId);
-            if(t == null){
+            if (t == null) {
                 Timeline<HttpResponse> timeline = new MemTimeline<>();
                 Constants.msgSyncer.put(userId, timeline);
-            }else if (!t.isEmpty()){
+            } else if (!t.isEmpty()) {
                 // push all msg
-                t.getAll().forEach(msg->sendMessage(ctx,msg.toString()));
+                t.getAll().forEach(msg -> sendMessage(ctx, msg.toString()));
             }
         }
 
     }
 
-    private void cacheMessage(String toUserId, HttpResponse msg){
+    private void cacheMessage(String toUserId, HttpResponse msg) {
         if (userDao.get(toUserId) != null) {
-            if(Constants.msgSyncer.get(toUserId) == null ){
+            if (Constants.msgSyncer.get(toUserId) == null) {
                 Timeline<HttpResponse> timeline = new MemTimeline<>();
                 Constants.msgSyncer.put(toUserId, timeline);
             }
@@ -177,7 +177,7 @@ public class IMServiceImpl implements IMService {
     }
 
     private void sendMessage(ChannelHandlerContext ctx, String message) {
-        LOGGER.info("send message {} ",message);
+        LOGGER.info("send message {} ", message);
         ctx.channel().writeAndFlush(new TextWebSocketFrame(message));
     }
 }
