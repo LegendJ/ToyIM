@@ -1,12 +1,12 @@
-version : '2'
+version: '2'
 services:
 
   mysqldbserver:
     build:
       context: .
-      dockerfile: mysqldb.dockerfile
-#    image:
-#      just/mysql:latest
+      dockerfile: mysql.dockerfile
+    #    image:
+    #      just/mysql:latest
     ports:
       - "3306:3306"
     expose:
@@ -21,10 +21,10 @@ services:
     container_name: mysqldbserver
 
   springappserver:
-        build:
-          context: .
-          dockerfile: springapp.dockerfile
-#    image: just/springapp:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #    image: just/springapp:latest
     ports:
       - "8081:8081"
       - "2333:2333"
